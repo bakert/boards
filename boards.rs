@@ -4,22 +4,37 @@ const EMPTY: char = ' ';
 const X: char = 'X';
 const O: char = 'O';
 
+type Boards = HashMap<String, Board>;
 type Board = [[char; 3]; 3];
-type Keys = [String; 8];
+type Representations = [String; 8];
+
+trait BoardMethods {
+    fn display(&self) -> String;
+    fn is_terminal(&self) -> bool;
+    fn representation(&self) -> String;
+    fn all_representations(&self) -> Representations;
+    fn rotate(&self) -> Board;
+    fn transpose(&self) -> Board;
+}
+
+trait BoardsMethods {
+    fn contains(&self, b: Board) -> bool;
+    fn insert_board(&mut self, b: Board);
+}
 
 fn main() {
     test();
     let empty_board: Board = [[EMPTY; 3]; 3];
+    let mut final_boards: Boards = HashMap::new();
     let boards: Vec<Board> = all_boards(empty_board, X);
-    let mut terminal_boards: HashMap<String, Board> = HashMap::new();
     for board in boards {
-        if is_terminal(board) && !contains(&terminal_boards, board) {
-            terminal_boards.insert(representation(board), board);
+        if board.is_terminal() && !final_boards.contains(board) {
+            final_boards.insert_board(board);
         }
     }
-    println!("{} unique terminal boards found", terminal_boards.len());
-    for (_, board) in terminal_boards {
-        display(board);
+    println!("{} unique terminal boards found\n", final_boards.len());
+    for (_, board) in final_boards {
+        println!("{}", board.display());
     }
 }
 
@@ -33,105 +48,112 @@ fn all_boards(board: Board, to_play: char) -> Vec<Board> {
                 let mut b: Board = board.clone();
                 b[x][y] = to_play;
                 boards.push(b);
-                if !is_terminal(b) {
+                if !b.is_terminal() {
                     boards.append(&mut all_boards(b, to_play_next));
                 }
             }
         }
     }
-    return boards
+    return boards;
 }
 
-fn display(board: Board) {
-    for row in board {
-        for square in row {
-            print!("| {} ", square);
+impl BoardMethods for Board {
+    fn display(&self) -> String {
+        let mut s = String::new();
+        for row in self {
+            for square in row {
+                s.push('|');
+                s.push(*square);
+            }
+            s.push_str("|\n");
         }
-        print!("|\n");
+        return s;
     }
-    println!("\n")
-}
 
-fn is_terminal(board: Board) -> bool {
-    for x in 0..board.len() {
-        if board[x][0] != EMPTY && board[x][0] == board[x][1] && board[x][1] == board[x][2] {
-            return true;
-        }
-    }
-    for y in 0..board[0].len() {
-        if board[0][y] != EMPTY && board[0][y] == board[1][y] && board[1][y] == board[2][y] {
-            return true;
-        }
-    }
-    if board[0][0] != EMPTY && board[0][0] == board[1][1] && board[1][1] == board[2][2] {
-        return true;
-    }
-    if board[0][2] != EMPTY && board[0][2] == board[1][1] && board[1][1] == board[2][0] {
-        return true;
-    }
-    for row in board {
-        for square in row {
-            if square == EMPTY {
-                return false;
+    fn is_terminal(&self) -> bool {
+        for i in 0..3 {
+            if self[i][0] != EMPTY && self[i][0] == self[i][1] && self[i][1] == self[i][2] {
+                return true;
+            }
+            if self[0][i] != EMPTY && self[0][i] == self[1][i] && self[1][i] == self[2][i] {
+                return true;
             }
         }
-    }
-    return true;
-}
-
-fn contains(boards: &HashMap<String, Board>, board: Board) -> bool {
-    let keys: Keys = all_representations(board);
-    for key in keys {
-        if boards.contains_key(&key) {
+        if self[0][0] != EMPTY && self[0][0] == self[1][1] && self[1][1] == self[2][2] {
             return true;
         }
-    }
-    return false;
-}
-
-fn all_representations(board: Board) -> Keys {
-    let mut r: Keys = Default::default();
-    r[0] = representation(board);
-    r[1] = representation(rotate(board));
-    r[2] = representation(rotate(rotate(board)));
-    r[3] = representation(rotate(rotate(rotate(board))));
-    r[4] = representation(transpose(board));
-    r[5] = representation(transpose(rotate(board)));
-    r[6] = representation(transpose(rotate(rotate(board))));
-    r[7] = representation(transpose(rotate(rotate(rotate(board)))));
-    return r;
-}
-
-fn representation(board: Board) -> String {
-    let mut s = String::new();
-    for row in board {
-        for square in row {
-            s.push(square);
+        if self[0][2] != EMPTY && self[0][2] == self[1][1] && self[1][1] == self[2][0] {
+            return true;
         }
+        for row in self {
+            for square in row {
+                if *square == EMPTY {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
-    return s;
+
+    fn all_representations(&self) -> Representations {
+        let mut r: Representations = Default::default();
+        r[0] = self.representation();
+        r[1] = self.rotate().representation();
+        r[2] = self.rotate().rotate().representation();
+        r[3] = self.rotate().rotate().rotate().representation();
+        r[4] = self.transpose().representation();
+        r[5] = self.rotate().transpose().representation();
+        r[6] = self.rotate().rotate().transpose().representation();
+        r[7] = self.rotate().rotate().rotate().transpose().representation();
+        return r;
+    }
+
+    fn representation(&self) -> String {
+        let mut s = String::new();
+        for row in self {
+            for square in row {
+                s.push(*square);
+            }
+        }
+        return s;
+    }
+
+    fn rotate(&self) -> Board {
+        let mut b: Board = [[EMPTY, EMPTY, EMPTY]; 3];
+        for x in 0..self.len() {
+            let row = self[x];
+            for y in 0..row.len() {
+                b[x][y] = self[row.len() - y - 1][x];
+            }
+        }
+        return b
+    }
+
+    fn transpose(&self) -> Board {
+        let mut b: Board = [[EMPTY, EMPTY, EMPTY]; 3];
+        for x in 0..self.len() {
+            let row = self[x];
+            for y in 0..row.len() {
+                b[y][x] = self[x][y];
+            }
+        }
+        return b;
+    }
 }
 
-fn rotate(board: Board) -> Board {
-    let mut b: Board = [[EMPTY, EMPTY, EMPTY]; 3];
-    for x in 0..board.len() {
-        let row = board[x];
-        for y in 0..row.len() {
-            b[x][y] = board[row.len() - y - 1][x];
+impl BoardsMethods for Boards {
+    fn contains(&self, board: Board) -> bool {
+        for repr in board.all_representations() {
+            if self.contains_key(&repr) {
+                return true;
+            }
         }
+        return false;
     }
-    return b
-}
 
-fn transpose(board: Board) -> Board {
-    let mut b: Board = [[EMPTY, EMPTY, EMPTY]; 3];
-    for x in 0..board.len() {
-        let row = board[x];
-        for y in 0..row.len() {
-            b[y][x] = board[x][y];
-        }
+    fn insert_board(&mut self, b: Board) {
+        self.insert(b.representation(), b);
     }
-    return b;
 }
 
 fn test() {
@@ -144,7 +166,7 @@ fn test_rotate() {
     // OOO => _OX
     // ___    _OX
     let b: Board = [[X, X, X], [O, O, O], [EMPTY, EMPTY, EMPTY]];
-    let rotated: Board = rotate(b);
+    let rotated: Board = b.rotate();
     assert!(rotated[0] == [EMPTY, O, X]);
     assert!(rotated[1] == [EMPTY, O, X]);
     assert!(rotated[2] == [EMPTY, O, X]);
@@ -155,6 +177,6 @@ fn test_transpose() {
     // OX_ => _X_
     // __X    O_X
     let b: Board = [[X, EMPTY, O], [O, X, EMPTY], [EMPTY, EMPTY, X]];
-    let transposed: Board = transpose(b);
+    let transposed: Board = b.transpose();
     assert!(transposed == [[X, O, EMPTY], [EMPTY, X, EMPTY], [O, EMPTY, X]]);
 }

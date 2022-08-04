@@ -1,4 +1,4 @@
-= Tic-Tac-Toe Terminal Positions
+# Tic-Tac-Toe Terminal Positions
 
 A Rust program to generate all the terminal positions of the game of Tic-Tac-Toe.
 

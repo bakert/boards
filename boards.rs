@@ -163,9 +163,9 @@ fn test_rotate() {
     // ___    _OX
     let b: Board = [[X, X, X], [O, O, O], [EMPTY, EMPTY, EMPTY]];
     let rotated: Board = b.rotate();
-    assert!(rotated[0] == [EMPTY, O, X]);
-    assert!(rotated[1] == [EMPTY, O, X]);
-    assert!(rotated[2] == [EMPTY, O, X]);
+    assert_eq!(rotated[0], [EMPTY, O, X]);
+    assert_eq!(rotated[1], [EMPTY, O, X]);
+    assert_eq!(rotated[2], [EMPTY, O, X]);
 }
 
 #[test]
@@ -175,5 +175,5 @@ fn test_transpose() {
     // __X    O_X
     let b: Board = [[X, EMPTY, O], [O, X, EMPTY], [EMPTY, EMPTY, X]];
     let transposed: Board = b.transpose();
-    assert!(transposed == [[X, O, EMPTY], [EMPTY, X, EMPTY], [O, EMPTY, X]]);
+    assert_eq!(transposed, [[X, O, EMPTY], [EMPTY, X, EMPTY], [O, EMPTY, X]]);
 }

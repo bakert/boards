@@ -53,7 +53,7 @@ fn all_boards(board: Board, to_play: char) -> Vec<Board> {
             }
         }
     }
-    return boards;
+    boards
 }
 
 impl BoardMethods for Board {
@@ -66,7 +66,7 @@ impl BoardMethods for Board {
             }
             s.push_str("|\n");
         }
-        return s;
+        s
     }
 
     fn is_terminal(&self) -> bool {
@@ -91,7 +91,7 @@ impl BoardMethods for Board {
                 }
             }
         }
-        return true;
+        true
     }
 
     fn all_representations(&self) -> Representations {
@@ -107,7 +107,7 @@ impl BoardMethods for Board {
         b = b.rotate();
         r[6] = b.representation();
         r[7] = b.transpose().representation();
-        return r
+        r
     }
 
     fn representation(&self) -> String {
@@ -117,7 +117,7 @@ impl BoardMethods for Board {
                 s.push(*square);
             }
         }
-        return s;
+        s
     }
 
     fn rotate(&self) -> Board {
@@ -128,7 +128,7 @@ impl BoardMethods for Board {
                 b[x][y] = self[row.len() - y - 1][x];
             }
         }
-        return b
+        b
     }
 
     fn transpose(&self) -> Board {
@@ -139,7 +139,7 @@ impl BoardMethods for Board {
                 b[y][x] = self[x][y];
             }
         }
-        return b;
+        b
     }
 }
 
@@ -150,7 +150,7 @@ impl BoardsMethods for Boards {
                 return true;
             }
         }
-        return false;
+        false
     }
 
     fn insert_board(&mut self, b: Board) {

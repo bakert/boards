@@ -23,7 +23,6 @@ trait BoardsMethods {
 }
 
 fn main() {
-    test();
     let empty_board: Board = [[EMPTY; 3]; 3];
     let mut final_boards: Boards = HashMap::new();
     let boards: Vec<Board> = all_boards(empty_board, X);
@@ -156,11 +155,8 @@ impl BoardsMethods for Boards {
     }
 }
 
-fn test() {
-    test_rotate();
-    test_transpose();
-}
 
+#[test]
 fn test_rotate() {
     // XXX    _OX
     // OOO => _OX
@@ -172,6 +168,7 @@ fn test_rotate() {
     assert!(rotated[2] == [EMPTY, O, X]);
 }
 
+#[test]
 fn test_transpose() {
     // X_O    XO_
     // OX_ => _X_

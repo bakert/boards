@@ -97,14 +97,17 @@ impl BoardMethods for Board {
     fn all_representations(&self) -> Representations {
         let mut r: Representations = Default::default();
         r[0] = self.representation();
-        r[1] = self.rotate().representation();
-        r[2] = self.rotate().rotate().representation();
-        r[3] = self.rotate().rotate().rotate().representation();
-        r[4] = self.transpose().representation();
-        r[5] = self.rotate().transpose().representation();
-        r[6] = self.rotate().rotate().transpose().representation();
-        r[7] = self.rotate().rotate().rotate().transpose().representation();
-        return r;
+        r[1] = self.transpose().representation();
+        let mut b: Board = self.rotate();
+        r[2] = b.representation();
+        r[3] = b.transpose().representation();
+        b = b.rotate();
+        r[4] = b.representation();
+        r[5] = b.transpose().representation();
+        b = b.rotate();
+        r[6] = b.representation();
+        r[7] = b.transpose().representation();
+        return r
     }
 
     fn representation(&self) -> String {
@@ -176,4 +179,13 @@ fn test_transpose() {
     let b: Board = [[X, EMPTY, O], [O, X, EMPTY], [EMPTY, EMPTY, X]];
     let transposed: Board = b.transpose();
     assert_eq!(transposed, [[X, O, EMPTY], [EMPTY, X, EMPTY], [O, EMPTY, X]]);
+}
+
+#[test]
+fn test_representation() {
+    let b: Board = [[X, X, X], [X, X, X], [X, X, X]];
+    let expected = "XXXXXXXXX";
+    for actual in b.all_representations() {
+        assert_eq!(expected, actual);
+    }
 }

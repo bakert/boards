@@ -50,13 +50,14 @@ fn all_boards(board: Board, to_play: char) -> Vec<Board> {
     for x in 0..board.len() {
         let row = board[x];
         for y in 0..row.len() {
-            if board[x][y] == EMPTY {
-                let mut b: Board = board.clone();
-                b[x][y] = to_play;
-                boards.push(b);
-                if !b.is_terminal() {
-                    boards.append(&mut all_boards(b, to_play_next));
-                }
+            if board[x][y] != EMPTY {
+                continue;
+            }
+            let mut b: Board = board.clone();
+            b[x][y] = to_play;
+            boards.push(b);
+            if !b.is_terminal() {
+                boards.append(&mut all_boards(b, to_play_next));
             }
         }
     }

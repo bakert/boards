@@ -33,9 +33,9 @@ fn main() {
 }
 
 fn terminal_boards() -> Vec<Board> {
-    let empty_board: Board = [[EMPTY; 3]; 3];
-    let mut final_boards: Boards = HashMap::new();
-    let boards: Vec<Board> = all_boards(empty_board, X);
+    let empty_board = [[EMPTY; 3]; 3];
+    let mut final_boards = HashMap::new();
+    let boards = all_boards(empty_board, X);
     for board in boards {
         if board.is_terminal() && !final_boards.contains(board) {
             final_boards.insert_board(board);
@@ -45,15 +45,15 @@ fn terminal_boards() -> Vec<Board> {
 }
 
 fn all_boards(board: Board, to_play: char) -> Vec<Board> {
-    let to_play_next: char = if to_play == X { O } else { X };
-    let mut boards: Vec<Board> = Vec::new();
+    let to_play_next = if to_play == X { O } else { X };
+    let mut boards = Vec::new();
     for x in 0..board.len() {
         let row = board[x];
         for y in 0..row.len() {
             if board[x][y] != EMPTY {
                 continue;
             }
-            let mut b: Board = board.clone();
+            let mut b = board.clone();
             b[x][y] = to_play;
             boards.push(b);
             if !b.is_terminal() {
@@ -106,7 +106,7 @@ impl BoardMethods for Board {
         let mut r: Representations = Default::default();
         r[0] = self.representation();
         r[1] = self.transpose().representation();
-        let mut b: Board = self.rotate();
+        let mut b = self.rotate();
         r[2] = b.representation();
         r[3] = b.transpose().representation();
         b = b.rotate();
@@ -129,7 +129,7 @@ impl BoardMethods for Board {
     }
 
     fn rotate(&self) -> Board {
-        let mut b: Board = [[EMPTY, EMPTY, EMPTY]; 3];
+        let mut b = [[EMPTY, EMPTY, EMPTY]; 3];
         for x in 0..self.len() {
             let row = self[x];
             for y in 0..row.len() {
@@ -140,7 +140,7 @@ impl BoardMethods for Board {
     }
 
     fn transpose(&self) -> Board {
-        let mut b: Board = [[EMPTY, EMPTY, EMPTY]; 3];
+        let mut b = [[EMPTY, EMPTY, EMPTY]; 3];
         for x in 0..self.len() {
             let row = self[x];
             for y in 0..row.len() {
@@ -172,8 +172,8 @@ fn test_rotate() {
     // XXX    _OX
     // OOO => _OX
     // ___    _OX
-    let b: Board = [[X, X, X], [O, O, O], [EMPTY, EMPTY, EMPTY]];
-    let rotated: Board = b.rotate();
+    let b = [[X, X, X], [O, O, O], [EMPTY, EMPTY, EMPTY]];
+    let rotated = b.rotate();
     assert_eq!(rotated[0], [EMPTY, O, X]);
     assert_eq!(rotated[1], [EMPTY, O, X]);
     assert_eq!(rotated[2], [EMPTY, O, X]);
@@ -184,14 +184,14 @@ fn test_transpose() {
     // X_O    XO_
     // OX_ => _X_
     // __X    O_X
-    let b: Board = [[X, EMPTY, O], [O, X, EMPTY], [EMPTY, EMPTY, X]];
-    let transposed: Board = b.transpose();
+    let b = [[X, EMPTY, O], [O, X, EMPTY], [EMPTY, EMPTY, X]];
+    let transposed = b.transpose();
     assert_eq!(transposed, [[X, O, EMPTY], [EMPTY, X, EMPTY], [O, EMPTY, X]]);
 }
 
 #[test]
 fn test_representation() {
-    let b: Board = [[X, X, X], [X, X, X], [X, X, X]];
+    let b = [[X, X, X], [X, X, X], [X, X, X]];
     let expected = "XXXXXXXXX";
     for actual in b.all_representations() {
         assert_eq!(expected, actual);

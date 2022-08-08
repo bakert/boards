@@ -41,11 +41,7 @@ fn terminal_boards() -> Vec<Board> {
             final_boards.insert_board(board);
         }
     }
-    let mut bs = Vec::new();
-    for (_, board) in final_boards {
-        bs.push(board);
-    }
-    bs
+    final_boards.into_values().collect()
 }
 
 fn all_boards(board: Board, to_play: char) -> Vec<Board> {

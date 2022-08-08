@@ -23,6 +23,16 @@ trait BoardsMethods {
 }
 
 fn main() {
+    let terminal_boards = terminal_boards();
+    let n = terminal_boards.len();
+    println!("{} unique terminal boards found\n", n);
+    for board in terminal_boards {
+        println!("{}", board.display());
+    }
+    println!("{} unique terminal boards found\n", n);
+}
+
+fn terminal_boards() -> Vec<Board> {
     let empty_board: Board = [[EMPTY; 3]; 3];
     let mut final_boards: Boards = HashMap::new();
     let boards: Vec<Board> = all_boards(empty_board, X);
@@ -31,10 +41,11 @@ fn main() {
             final_boards.insert_board(board);
         }
     }
-    println!("{} unique terminal boards found\n", final_boards.len());
+    let mut bs = Vec::new();
     for (_, board) in final_boards {
-        println!("{}", board.display());
+        bs.push(board);
     }
+    bs
 }
 
 fn all_boards(board: Board, to_play: char) -> Vec<Board> {
@@ -188,4 +199,10 @@ fn test_representation() {
     for actual in b.all_representations() {
         assert_eq!(expected, actual);
     }
+}
+
+#[test]
+fn test_terminal_boards() {
+    let tbs = terminal_boards();
+    assert_eq!(138, tbs.len());
 }

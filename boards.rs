@@ -169,9 +169,9 @@ impl BoardsMethods for Boards {
 
 #[test]
 fn test_rotate() {
-    // XXX    _OX
-    // OOO => _OX
-    // ___    _OX
+    // |X|X|X|      | |O|X|
+    // |O|O|O|  =>  | |O|X|
+    // | | | |      | |O|X|
     let b = [[X, X, X], [O, O, O], [EMPTY, EMPTY, EMPTY]];
     let rotated = b.rotate();
     assert_eq!(rotated[0], [EMPTY, O, X]);
@@ -181,9 +181,9 @@ fn test_rotate() {
 
 #[test]
 fn test_transpose() {
-    // X_O    XO_
-    // OX_ => _X_
-    // __X    O_X
+    // |X| |O|      |X|O| |
+    // |O|X| |  =>  | |X| |
+    // | | |X|      |O| |X|
     let b = [[X, EMPTY, O], [O, X, EMPTY], [EMPTY, EMPTY, X]];
     let transposed = b.transpose();
     assert_eq!(transposed, [[X, O, EMPTY], [EMPTY, X, EMPTY], [O, EMPTY, X]]);

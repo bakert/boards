@@ -129,7 +129,7 @@ impl BoardMethods for Board {
     }
 
     fn rotate(&self) -> Board {
-        let mut b = [[EMPTY, EMPTY, EMPTY]; 3];
+        let mut b = [[EMPTY; 3]; 3];
         for x in 0..self.len() {
             let row = self[x];
             for y in 0..row.len() {
@@ -140,7 +140,7 @@ impl BoardMethods for Board {
     }
 
     fn transpose(&self) -> Board {
-        let mut b = [[EMPTY, EMPTY, EMPTY]; 3];
+        let mut b = [[EMPTY; 3]; 3];
         for x in 0..self.len() {
             let row = self[x];
             for y in 0..row.len() {
